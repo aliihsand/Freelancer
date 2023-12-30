@@ -1,0 +1,31 @@
+﻿@model List<Freelance.MvcWebUI.Models.ProjectStateViewModel>
+@{
+    ViewBag.Title = "MyProjectsAsOwner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string color;
+}
+
+<div style="text-align : center">
+    <h1 class="title" style="color : #8BC34A;">Yayımladığım Projeler</h1>
+</div>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    foreach (var projectStateViewModel in Model)
+    {
+        <a href="/Projects/Details?Id=@projectStateViewModel.Project.Id">
+            <div class="blank-page widget-shadow scroll">
+                <h3>@projectStateViewModel.Project.Header</h3>
+                <h5 align="right">Durumu: @(projectStateViewModel.State != null ? projectStateViewModel.State.StateString.ToString() : "Belirtilmedi")</h5>
+            </div>
+        </a>
+        <hr />
+    }
+}
+else
+{
+    <p>Projeler bulunamadı veya Model boş.</p>
+}
+
