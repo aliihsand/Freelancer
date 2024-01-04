@@ -32,5 +32,6 @@ namespace Freelance.DAL.Abstract
         bool IsExistById(int id);
 
 
+
     }
 }

@@ -130,8 +130,7 @@ namespace Freelance.DAL.Concrete.EntityFramework
             {
                 return false;
             }
-        }
-
+        }     
         
     }
 }

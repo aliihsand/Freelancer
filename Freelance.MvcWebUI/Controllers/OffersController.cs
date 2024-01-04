@@ -14,11 +14,13 @@ namespace Freelance.MvcWebUI.Controllers
         IOfferDal _offerDal = new EFOfferDal();
         IProjectDal _projectDal = new EFProjectDal();
         IPaymentDal _paymentDal = new EFPaymentDal();
+
+        [Authorize]
         public ActionResult Index()
         {
             return View();
         }
-
+        [Authorize]
         [HttpPost]
         [ActionName("AcceptOffer")]
         public ActionResult AcceptOffer(int offerId)
@@ -32,6 +34,7 @@ namespace Freelance.MvcWebUI.Controllers
             return RedirectToAction("index", "Home");
         }
 
+        [Authorize]
         [HttpPost]
         [ActionName("GiveOffer")]
         public ActionResult GiveOffer(int projectId, FormCollection formCollection)

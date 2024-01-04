@@ -44,7 +44,6 @@
     <script type="text/javascript">
 
     </script>
-    <!--//Metis Menu -->
 </head>
 
 
@@ -68,12 +67,6 @@
                         <a href="#giveOffer" role="tab" id="giveOffer-tab" data-toggle="tab" aria-controls="giveOffer" aria-expanded="false">Teklif Ver</a>
                     </li>
                 }
-                <!--@if (projectOwnerId != CurrentUserId)
-                {
-                    <li role="presentation" class="">
-                        <a href="#sendMessage" role="tab" id="sendMessage-tab" data-toggle="tab" aria-controls="sendMessage" aria-expanded="false">Mesaj Gönder</a>
-                    </li>
-                }-->
                 @if (Model.Project.StateId == 2 && Model.Project.WorkerId == Convert.ToInt32(CurrentUserId))
                 {
                     <form action="/projects/setCompleteAsWorker?projectId=@Convert.ToInt32(Model.Project.Id)" method="post">
@@ -83,7 +76,7 @@
                 @if (projectOwnerId == CurrentUserId && Model.Project.StateId == 3)
                 {
                     <form action="/projects/setCompleteAsOwner?projectId=@Model.Project.Id" method="post">
-                        <input type="submit" value="Onayla ve Ödemeyi Tamamla" class=" btn btn-success">
+                        <input type="submit" value="Onayla ve Ödemeyi Tamamla" class="btn btn-success">
                     </form>
                 }
 

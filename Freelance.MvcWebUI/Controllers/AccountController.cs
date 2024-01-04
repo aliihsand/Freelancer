@@ -58,6 +58,7 @@ namespace Freelance.MvcWebUI.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Logout()
         {
@@ -84,6 +85,30 @@ namespace Freelance.MvcWebUI.Controllers
                 string mail = formCollection["registerMail"];
                 string password = formCollection["registerPassword"];
 
+
+                // Şifre kısıtlamalarını kontrol et
+                if (!IsPasswordValid(password))
+                {
+                    ViewData["registerErrormessage"] = "Şifre geçerlilik kurallarına uymalıdır.[Harf Uzunluğu : (5-30) karakter]";
+                    return View("Login");
+                }
+
+                // E-posta kısıtlamalarını kontrol et
+                string emailErrorMessage = ValidateEmail(mail);
+
+                if (!string.IsNullOrEmpty(emailErrorMessage))
+                {
+                    ViewData["registerErrormessage"] = emailErrorMessage;
+                    return View("Login");
+                }
+
+                string usernameErrorMessage = ValidateUsername(userName);
+                if (!string.IsNullOrEmpty(usernameErrorMessage))
+                {
+                    ViewData["registerErrormessage"] = usernameErrorMessage;
+                    return View("Login");
+                }
+
                 User user = _userDal.GetUserByMail(mail);
 
                 if (user != null)
@@ -105,6 +130,48 @@ namespace Freelance.MvcWebUI.Controllers
                     return View("Login");
                 }
             }
+        }
+
+        private bool IsPasswordValid(string password)
+        {
+            // Şifre uzunluğu en az 5, en fazla 30 karakter olmalı
+            if (password.Length < 5 || password.Length > 30)
+            {
+                return false;
+            }
+            // Şifre kurallarına uyan bir şifre
+            return true;
+        }
+
+        private string ValidateEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                if (addr.Address != email)
+                {
+                    return "Geçersiz e-posta adresi formatı.";
+                }
+            }
+            catch
+            {
+                return "Geçersiz e-posta adresi formatı.";
+            }
+
+            // E-posta kurallarına uyan bir e-posta adresi
+            return null;
+        }
+
+        private string ValidateUsername(string username)
+        {
+            // Kullanıcı adı uzunluğu en az 3, en çok 30 karakter olmalı
+            if (username.Length < 3 || username.Length > 30)
+            {
+                return "Kullanıcı adı 3 ila 30 karakter arasında olmalıdır.";
+            }
+
+            // Kullanıcı adı kurallarına uyan bir kullanıcı adı
+            return null;
         }
     }
 }

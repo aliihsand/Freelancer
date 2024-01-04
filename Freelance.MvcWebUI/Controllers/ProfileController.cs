@@ -17,6 +17,7 @@ namespace Freelance.MvcWebUI.Controllers
         IProjectDal _projectDal = new EFProjectDal();
         IStateDal _stateDal = new EFStateDal();
 
+        [Authorize]
         [HttpGet]
         public ActionResult Index()
         {
@@ -39,6 +40,7 @@ namespace Freelance.MvcWebUI.Controllers
             return View(userProfileViewModel);
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Edit()
         {
@@ -47,6 +49,7 @@ namespace Freelance.MvcWebUI.Controllers
             return View(user);
         }
 
+        [Authorize]
         public ActionResult MyProjectsAsOwner()
         {
             List<ProjectStateViewModel> projectStateViewModels = new List<ProjectStateViewModel>();
@@ -65,6 +68,7 @@ namespace Freelance.MvcWebUI.Controllers
             return View(projectStateViewModels); 
         }
 
+        [Authorize]
         public ActionResult MyProjectsAsWorker()
         {
             List<ProjectStateViewModel> projectStateViewModels = new List<ProjectStateViewModel>();
@@ -86,12 +90,14 @@ namespace Freelance.MvcWebUI.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult AddCredit()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         [ActionName("AddCredit")]
         public ActionResult AddCredit(int currentUserId, FormCollection formCollection)
@@ -105,7 +111,8 @@ namespace Freelance.MvcWebUI.Controllers
 
             return RedirectToAction("index", "Home");
         }
-        
+
+        [Authorize]
         [HttpPost]
         public ActionResult Edit(User user)
         {

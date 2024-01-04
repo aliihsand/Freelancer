@@ -20,11 +20,13 @@ namespace Freelance.MvcWebUI.Controllers
         IPaymentDal _paymentDal = new EFPaymentDal();
         ProjectDetailViewModel projectDetailViewModel = new ProjectDetailViewModel();
 
+        [Authorize]
         public ActionResult Index()
         {
             List<Project> projects = _projectDal.GetByHasNotWorker();
             return View(projects);
         }
+        [Authorize]
 
         public ActionResult Details(int id)
         {
@@ -48,12 +50,14 @@ namespace Freelance.MvcWebUI.Controllers
             return View(projectDetailViewModel);
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Publish()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult Publish(Project project)
         {
@@ -68,7 +72,7 @@ namespace Freelance.MvcWebUI.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost]
         public ActionResult SetCompleteAsWorker(int projectId)
         {
@@ -80,20 +84,47 @@ namespace Freelance.MvcWebUI.Controllers
 
             return RedirectToAction("index", "home");
         }
-        
+
+        [Authorize]
         [HttpPost]
         public ActionResult SetCompleteAsOwner(int projectId)
         {
             Payment payment = _paymentDal.FindByProjectId(projectId);
+            Project project = _projectDal.GetProject(projectId);
+            List<Offer> offers = _offerDal.GetOffersByProjectId(projectId);
+            User owner = _userDal.GetUser(project.OwnerId);
+
+            // Bütçe kontrolü
+            if (payment.AcceptedPrice > owner.Credit)
+            {
+                if (TempData.ContainsKey("error"))
+                {
+                    TempData["message"] = String.Format("Hesap bakiyeniz, projenin bütçesinden düşük. Ödeme tamamlanamaz.");
+                }
+                else
+                {
+                    TempData.Add("message", String.Format("Hesap bakiyeniz, projenin bütçesinden düşük. Ödeme tamamlanamaz."));
+                }
+                return RedirectToAction("MyProjectsAsOwner", "Profile");
+            }
+
             _paymentDal.MakePayment(payment);
 
-            Project project = _projectDal.GetProject(projectId);
             project.StateId = 4;
             _projectDal.UpdateProject(project);
 
-            TempData.Add("message", String.Format("Proje onaylandı. Ödeme Tamamlandı."));
+            if (TempData.ContainsKey("message"))
+            {
+                TempData["message"] = String.Format("Proje onaylandı. Ödeme Tamamlandı.");
+            }
+            else
+            {
+                TempData.Add("message", String.Format("Proje onaylandı. Ödeme Tamamlandı."));
+            }
+
 
             return RedirectToAction("index", "home");
         }
+
     }
 }
